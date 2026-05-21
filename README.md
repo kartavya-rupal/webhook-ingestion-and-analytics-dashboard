@@ -111,6 +111,16 @@ Architecture and planning:
 - observability map
 - deferred items
 
+### Phase 3 ✅ Completed
+Local development setup:
+- monorepo app skeleton
+- shared packages
+- Docker Compose local infrastructure
+- config and secrets handling
+- health and readiness checks
+- stable dev workflow
+- local documentation
+
 ## Planned future integrations
 
 The following services are planned for later phases and are intentionally deferred during early development to reduce infrastructure cost and complexity:
@@ -151,12 +161,15 @@ Documentation and architecture:
 - API surface
 - observability mapping
 
-### Phase 3
+### Phase 3 ✅ Completed
 Local development setup:
 - app skeleton
-- service skeletons
-- Docker Compose
-- config and secrets handling
+- Docker setup
+- service connectivity
+- config strategy
+- health checks
+- tests
+- documentation
 
 ### Phase 4
 Webhook ingestion MVP:
@@ -193,9 +206,10 @@ Observability and hardening:
 
 ## Current status
 
-Phase 1 foundation setup completed.
-Phase 2 architecture and planning completed.
-Next focus: local development setup and application scaffolding.
+Phase 1 foundation setup completed.  
+Phase 2 architecture and planning completed.  
+Phase 3 local development setup completed.  
+Next focus: webhook ingestion MVP.
 
 ## Notes
 
