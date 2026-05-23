@@ -121,6 +121,15 @@ Local development setup:
 - stable dev workflow
 - local documentation
 
+### Phase 4 ✅ Completed
+Webhook ingestion MVP:
+- public ingest endpoint
+- signature verification
+- raw event storage
+- dedupe
+- queue dispatch
+- ingestion metadata tracking
+
 ## Planned future integrations
 
 The following services are planned for later phases and are intentionally deferred during early development to reduce infrastructure cost and complexity:
@@ -171,13 +180,14 @@ Local development setup:
 - tests
 - documentation
 
-### Phase 4
+### Phase 4 ✅ Completed
 Webhook ingestion MVP:
 - public ingest endpoint
 - signature verification
 - raw event storage
 - dedupe
 - queue dispatch
+- event status tracking
 
 ### Phase 5
 Async processing and reliability:
@@ -209,7 +219,8 @@ Observability and hardening:
 Phase 1 foundation setup completed.  
 Phase 2 architecture and planning completed.  
 Phase 3 local development setup completed.  
-Next focus: webhook ingestion MVP.
+Phase 4 webhook ingestion MVP completed.  
+Next focus: async processing and reliability.
 
 ## Notes
 
