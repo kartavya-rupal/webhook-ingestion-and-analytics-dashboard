@@ -73,13 +73,22 @@ Local development setup completed:
 - stable dev workflow
 - local documentation
 
+### Phase 4
+Webhook ingestion MVP completed:
+- public ingest endpoint
+- signature verification
+- raw payload archival
+- dedupe
+- queue dispatch
+- ingestion metadata tracking
+
 ### Current development focus
-- webhook ingestion MVP
-- signature verification implementation
-- raw payload storage
-- dedupe and queue dispatch
+- async processing and reliability
 - worker processing MVP
-- dashboard MVP
+- retries
+- DLQ handling
+- replay flow
+- delivery attempt logging
 
 ---
 
@@ -137,22 +146,23 @@ Local development setup completed:
 
 ## 6. High-Level Event Flow
 
-1. An external fintech system sends a webhook to FinRelay.
-2. The API ingress layer accepts the request.
-3. The webhook signature and timestamp are validated.
-4. The raw payload is persisted in S3.
-5. The event is checked for duplicates using Redis and PostgreSQL.
-6. The event metadata is written to PostgreSQL.
-7. The event is placed onto the SQS main queue.
-8. A worker consumes the message.
-9. The worker processes the event and updates delivery state.
-10. Success or failure is written back to PostgreSQL.
-11. Failed events are retried with backoff.
-12. Poison messages are moved to the DLQ.
-13. The dashboard reads event history, attempts, and replay status.
-14. Metrics and traces are exported to the observability stack.
-15. Alerts are triggered when abnormal conditions are detected.
-16. Operators can inspect, search, and replay events from the dashboard.
+1. An external fintech system sends a webhook to `POST /webhooks/:provider`.
+2. The API ingress layer accepts the request and reads the raw body.
+3. The provider slug is resolved against the endpoint configuration.
+4. The webhook signature and timestamp are validated.
+5. The raw payload is archived in S3.
+6. The event is checked for duplicates using Redis and PostgreSQL.
+7. The event metadata is written to PostgreSQL.
+8. The event is placed onto the SQS main queue.
+9. A worker consumes the message.
+10. The worker processes the event and updates delivery state.
+11. Success or failure is written back to PostgreSQL.
+12. Failed events are retried with backoff.
+13. Poison messages are moved to the DLQ.
+14. The dashboard reads event history, attempts, and replay status.
+15. Metrics and traces are exported to the observability stack.
+16. Alerts are triggered when abnormal conditions are detected.
+17. Operators can inspect, search, and replay events from the dashboard.
 
 ---
 
@@ -197,6 +207,7 @@ Used for:
 - tenants
 - users
 - endpoints
+- provider slugs
 - signing secrets metadata
 - webhook events
 - delivery attempts
@@ -205,6 +216,7 @@ Used for:
 - alert rules
 - audit logs
 - endpoint configs
+- ingestion metadata
 
 ### Cache
 - Redis
@@ -327,6 +339,7 @@ Owns:
 - signature verification
 - timestamp freshness checks
 - raw payload persistence
+- raw payload archival
 - dedupe initiation
 - queue enqueueing
 - fast 2xx response
@@ -434,6 +447,7 @@ Represents a webhook destination or monitored source.
 Fields:
 - id
 - tenant_id
+- provider_slug
 - name
 - url
 - event_filters
@@ -450,10 +464,19 @@ Fields:
 - id
 - tenant_id
 - endpoint_id
+- provider_slug
 - external_event_id
 - event_type
 - payload_path
 - payload_hash
+- raw_payload_size
+- request_headers
+- request_ip
+- dedupe_key
+- signature_verified_at
+- queued_at
+- queue_message_id
+- ingestion_error
 - status
 - received_at
 - processed_at
@@ -617,6 +640,7 @@ Replay states:
 ### Ingestion API owns
 - webhook intake
 - validation
+- raw payload archival
 - early state changes
 - queue enqueueing
 
@@ -795,13 +819,14 @@ Local development setup:
 - tests
 - documentation
 
-### Phase 4
+### Phase 4 ✅ Completed
 Webhook ingestion MVP:
 - incoming webhook API
 - signature validation
 - raw storage
 - dedupe
 - queue push
+- ingestion metadata tracking
 
 ### Phase 5
 Worker and reliability layer:
