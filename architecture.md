@@ -82,13 +82,21 @@ Webhook ingestion MVP completed:
 - queue dispatch
 - ingestion metadata tracking
 
-### Current development focus
-- async processing and reliability
+### Phase 5
+Async processing and reliability completed:
 - worker processing MVP
 - retries
 - DLQ handling
 - replay flow
 - delivery attempt logging
+
+### Current development focus
+- dashboard and analytics
+- operator views
+- event timelines
+- delivery metrics
+- failure trends
+- replay controls
 
 ---
 
@@ -476,6 +484,13 @@ Fields:
 - signature_verified_at
 - queued_at
 - queue_message_id
+- processing_started_at
+- processing_finished_at
+- last_attempt_number
+- last_failure_reason
+- last_failure_category
+- next_retry_at
+- dlq_moved_at
 - ingestion_error
 - status
 - received_at
@@ -490,9 +505,14 @@ Fields:
 - event_id
 - attempt_number
 - status
+- failure_category
 - response_code
 - error_message
 - duration_ms
+- started_at
+- finished_at
+- next_retry_at
+- worker_name
 - created_at
 
 ### Replay job
@@ -559,6 +579,7 @@ Proposed event states:
 - succeeded
 - failed_retryable
 - retry_scheduled
+- failed_non_retryable
 - moved_to_dlq
 - replay_requested
 - replay_processing
@@ -828,7 +849,7 @@ Webhook ingestion MVP:
 - queue push
 - ingestion metadata tracking
 
-### Phase 5
+### Phase 5 ✅ Completed
 Worker and reliability layer:
 - async processing
 - retries
