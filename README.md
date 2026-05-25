@@ -130,6 +130,14 @@ Webhook ingestion MVP:
 - queue dispatch
 - ingestion metadata tracking
 
+### Phase 5 ✅ Completed
+Async processing and reliability:
+- worker service
+- retries
+- DLQ
+- replay flow
+- delivery attempt logging
+
 ## Planned future integrations
 
 The following services are planned for later phases and are intentionally deferred during early development to reduce infrastructure cost and complexity:
@@ -189,7 +197,7 @@ Webhook ingestion MVP:
 - queue dispatch
 - event status tracking
 
-### Phase 5
+### Phase 5 ✅ Completed
 Async processing and reliability:
 - worker service
 - retries
@@ -220,7 +228,8 @@ Phase 1 foundation setup completed.
 Phase 2 architecture and planning completed.  
 Phase 3 local development setup completed.  
 Phase 4 webhook ingestion MVP completed.  
-Next focus: async processing and reliability.
+Phase 5 async processing and reliability completed.  
+Next focus: dashboard and analytics.
 
 ## Notes
 
