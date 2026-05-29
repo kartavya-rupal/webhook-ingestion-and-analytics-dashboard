@@ -138,6 +138,17 @@ Async processing and reliability:
 - replay flow
 - delivery attempt logging
 
+### Phase 6 ✅ Completed
+Dashboard and analytics:
+- operator views
+- event timelines
+- delivery metrics
+- failure trends
+- replay controls
+- event details screens
+- retry history visibility
+- dashboard charts and summaries
+
 ## Planned future integrations
 
 The following services are planned for later phases and are intentionally deferred during early development to reduce infrastructure cost and complexity:
@@ -205,7 +216,7 @@ Async processing and reliability:
 - replay flow
 - delivery attempt logging
 
-### Phase 6
+### Phase 6 ✅ Completed
 Dashboard and analytics:
 - operator views
 - event timelines
@@ -228,8 +239,9 @@ Phase 1 foundation setup completed.
 Phase 2 architecture and planning completed.  
 Phase 3 local development setup completed.  
 Phase 4 webhook ingestion MVP completed.  
-Phase 5 async processing and reliability completed.  
-Next focus: dashboard and analytics.
+Phase 5 async processing and reliability completed. 
+Phase 6 dashboard and analytics completed.
+Next focus: observability and hardening.
 
 ## Notes
 
