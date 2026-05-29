@@ -90,13 +90,24 @@ Async processing and reliability completed:
 - replay flow
 - delivery attempt logging
 
-### Current development focus
-- dashboard and analytics
+Dashboard and analytics completed:
 - operator views
 - event timelines
 - delivery metrics
 - failure trends
 - replay controls
+- event detail views
+- retry history visibility
+- dashboard summaries and charts
+
+### Current development focus
+- observability and hardening
+- traces
+- metrics
+- logs
+- alerts
+- role-based access
+- production deployment
 
 ---
 
@@ -857,7 +868,7 @@ Worker and reliability layer:
 - replay
 - delivery state updates
 
-### Phase 6
+### Phase 6 ✅ Completed
 Dashboard and analytics:
 - event list
 - event details
