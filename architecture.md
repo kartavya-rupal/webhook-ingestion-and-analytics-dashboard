@@ -2,11 +2,11 @@
 
 ## 1. Overview
 
-FinRelay is a fintech operations webhook reliability platform.
+FinRelay is a fintech operations webhook reliability, observability, and analytics platform.
 
-It receives webhook events from external systems, verifies them, stores them safely, processes them asynchronously, handles retries and failures, supports replay, and gives operators visibility into event delivery health.
+It receives webhook events from external systems, verifies them, stores them safely, processes them asynchronously, handles retries and failures, supports replay, and gives operators visibility into event delivery health and trend data.
 
-The system is designed around reliability, replayability, observability, and operational control.
+The system is designed around reliability, replayability, observability, analytics, and operational control.
 
 The project focuses on fintech-style events such as:
 - payment.succeeded
@@ -27,9 +27,9 @@ Webhook-driven systems are common in fintech, but they become difficult to manag
 - payloads need to be replayed
 - failures need auditing
 - operators need visibility into delivery behavior
-- teams need analytics around retries, latency, and failure patterns
+- teams need analytics around retries, latency, failure patterns, and replay success
 
-FinRelay solves that reliability and observability layer.
+FinRelay solves that reliability, observability, and analytics layer.
 
 ---
 
@@ -90,6 +90,7 @@ Async processing and reliability completed:
 - replay flow
 - delivery attempt logging
 
+### Phase 6
 Dashboard and analytics completed:
 - operator views
 - event timelines
@@ -100,14 +101,22 @@ Dashboard and analytics completed:
 - retry history visibility
 - dashboard summaries and charts
 
-### Current development focus
-- observability and hardening
+### Phase 7
+Observability and hardening completed:
 - traces
 - metrics
 - logs
 - alerts
 - role-based access
 - production deployment
+- analytics validation
+- analytics backfill support
+
+### Current development focus
+- ongoing production refinement
+- monitoring and maintenance
+- operational tuning
+- future feature expansion
 
 ---
 
@@ -150,6 +159,7 @@ Dashboard and analytics completed:
 - expose event delivery analytics
 - provide searchable payload and log inspection
 - send alerts for abnormal behavior
+- provide traceable operational visibility
 
 ### Non-functional goals
 - reliability
@@ -178,8 +188,8 @@ Dashboard and analytics completed:
 11. Success or failure is written back to PostgreSQL.
 12. Failed events are retried with backoff.
 13. Poison messages are moved to the DLQ.
-14. The dashboard reads event history, attempts, and replay status.
-15. Metrics and traces are exported to the observability stack.
+14. The dashboard reads event history, attempts, replay status, and analytics summaries.
+15. Metrics, traces, and logs are exported to the observability stack.
 16. Alerts are triggered when abnormal conditions are detected.
 17. Operators can inspect, search, and replay events from the dashboard.
 
@@ -202,7 +212,7 @@ Used for:
 - delivery timeline
 - DLQ browser
 - replay console
-- charts and dashboards
+- analytics dashboards
 - audit log viewer
 - search pages
 
@@ -218,6 +228,8 @@ Used for:
 - alert rules
 - auth-protected admin APIs
 - data retrieval for dashboard screens
+- analytics read endpoints
+- observability summaries
 
 ### Database
 - PostgreSQL
@@ -279,6 +291,7 @@ Used for:
 - retry counts
 - endpoint performance summaries
 - event trends
+- replay trends
 - dashboard charts
 
 ### Search
@@ -395,6 +408,7 @@ Owns:
 - replay actions
 - analytics summaries
 - audit log retrieval
+- metrics and observability summaries
 
 Must not own:
 - public webhook ingestion
@@ -410,6 +424,7 @@ Owns:
 - DLQ browser
 - analytics charts
 - audit log views
+- operational summary cards
 
 Must not own:
 - durable data storage
@@ -418,20 +433,29 @@ Must not own:
 - worker logic
 
 ### Analytics Path
-Planned for later:
+Implemented for dashboard use:
 - ClickHouse aggregates
 - trend charts
 - success/failure summaries
 - latency analysis
 - retry analysis
+- replay summaries
 
 ### Search Path
-Planned for later:
+Implemented or planned for later operational use:
 - payload search
 - event search
 - failed delivery search
 - log-style investigation
 - filtering by event type or endpoint
+
+### Observability Path
+Implemented for operational hardening:
+- traces
+- metrics
+- logs
+- alerting
+- dashboards
 
 ---
 
@@ -613,6 +637,8 @@ These states should be explicit in the data model so the dashboard can show a cl
 - manual replay
 - audit logging
 - event archival
+- analytics validation
+- backfill recovery
 
 ---
 
@@ -688,6 +714,8 @@ Replay states:
 - endpoint configuration
 - alert rules
 - audit logs
+- analytics queries
+- observability summaries
 
 ### PostgreSQL owns
 - durable business state
@@ -706,10 +734,10 @@ Replay states:
 ### DLQ owns
 - poison messages
 
-### ClickHouse owns later
+### ClickHouse owns
 - analytics aggregates
 
-### OpenSearch owns later
+### OpenSearch owns
 - searchable payloads and logs
 
 ---
@@ -735,13 +763,23 @@ Replay states:
 - GET /replay-jobs
 
 ### Analytics APIs
+- GET /analytics/overview
 - GET /analytics/summary
+- GET /analytics/trends
+- GET /analytics/endpoints
+- GET /analytics/event-types
+- GET /analytics/replays
 
 ### Alert APIs
 - GET /alerts
 
 ### Audit APIs
 - GET /audit-logs
+
+### Observability APIs
+- GET /metrics
+- GET /health
+- GET /ready
 
 ---
 
@@ -758,6 +796,7 @@ Replay states:
 - retry scheduling
 - DLQ move
 - replay execution
+- analytics sync
 
 ### Metrics
 - request count
@@ -769,6 +808,7 @@ Replay states:
 - worker processing time
 - replay success rate
 - endpoint failure rate
+- event latency percentiles
 
 ### Logs
 - request logs
@@ -778,13 +818,13 @@ Replay states:
 - error logs
 - audit logs
 
-### Planned destinations
+### Destinations
 - OpenTelemetry
 - Prometheus
 - Grafana
 - Loki
-- ClickHouse later
-- OpenSearch later
+- ClickHouse for aggregates
+- OpenSearch for search-backed investigation
 
 ---
 
@@ -799,21 +839,20 @@ Replay states:
 - payload redaction where needed
 - restricted replay permissions
 - private infrastructure access where possible
+- audit logging for sensitive actions
 
 ---
 
 ## 18. Deferred Items
 
-The following are intentionally deferred for later phases:
-- full ClickHouse implementation
-- full OpenSearch implementation
-- advanced alert routing
+The following are no longer major phase-level blockers, but they remain natural extension areas:
 - multi-region failover
 - Kubernetes
 - Terraform / full IaC automation
 - advanced autoscaling
 - rich reporting engine
 - public SaaS onboarding flows
+- broader enterprise workflow integrations
 
 ---
 
@@ -875,15 +914,18 @@ Dashboard and analytics:
 - retry history
 - replay console
 - analytics charts
+- operational summaries
 
-### Phase 7
+### Phase 7 ✅ Completed
 Observability and hardening:
 - traces
 - metrics
 - logs
 - alerts
-- security
-- deployment
+- role-based access
+- analytics validation
+- analytics backfill support
+- production deployment
 
 ---
 
@@ -897,4 +939,6 @@ The project is successful if it can:
 - support manual replay
 - provide usable analytics
 - expose searchable operational history
+- emit traces, metrics, and logs
+- alert on abnormal behavior
 - deploy cleanly in a production-like environment
