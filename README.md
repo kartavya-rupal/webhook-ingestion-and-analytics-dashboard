@@ -1,8 +1,8 @@
 # FinRelay
 
-FinRelay is a fintech-focused webhook reliability and analytics platform.
+FinRelay is a fintech-focused webhook reliability, observability, and analytics platform.
 
-It receives incoming webhook events from external systems, verifies their authenticity, stores the raw payload safely, queues processing asynchronously, retries failures with backoff, isolates poison messages in a dead-letter queue, and exposes delivery health through an operator dashboard.
+It receives incoming webhook events from external systems, verifies their authenticity, stores the raw payload safely, queues processing asynchronously, retries failures with backoff, isolates poison messages in a dead-letter queue, exposes delivery health through an operator dashboard, and provides operational analytics for monitoring reliability trends.
 
 ## What problem it solves
 
@@ -16,7 +16,8 @@ FinRelay helps teams:
 - route poison events into a DLQ
 - replay failed events from a dashboard
 - view reliability metrics and failure trends
-- inspect payloads, attempts, and traces
+- inspect payloads, attempts, traces, and charts
+- monitor the system with alerts and observability data
 
 ## Domain
 
@@ -46,16 +47,19 @@ Webhook source → API ingress → signature verification → raw storage → de
 - Cache: Redis
 - Queue: AWS SQS + DLQ
 - Storage: AWS S3
+- Analytics: ClickHouse
+- Search: OpenSearch
 
 ### Infrastructure and delivery stack
 - Deployment: Docker, AWS ECS/Fargate
 - CI/CD: GitHub Actions
 - Notifications: Slack / Email
 
-### Observability and future analytics stack
-- Observability: OpenTelemetry, Prometheus, Grafana, Loki
-- Analytics: ClickHouse
-- Search: OpenSearch
+### Observability stack
+- OpenTelemetry
+- Prometheus
+- Grafana
+- Loki
 
 ## Current infrastructure
 
@@ -72,6 +76,13 @@ Provisioned AWS resources:
 - ECS cluster foundation
 - CloudWatch log group
 - IAM roles and security groups
+
+Analytics and observability infrastructure:
+- ClickHouse analytics store
+- Prometheus metrics collection
+- Grafana dashboards
+- Loki log aggregation
+- OpenSearch search capability
 
 Configured environments:
 - Local development
@@ -149,15 +160,16 @@ Dashboard and analytics:
 - retry history visibility
 - dashboard charts and summaries
 
-## Planned future integrations
-
-The following services are planned for later phases and are intentionally deferred during early development to reduce infrastructure cost and complexity:
-
-- ClickHouse
-- OpenSearch
-- Grafana
-- Loki
-- Prometheus
+### Phase 7 ✅ Completed
+Observability and hardening:
+- traces
+- metrics
+- logs
+- alerts
+- role-based access
+- production deployment
+- analytics validation
+- analytics backfill support
 
 ## Phase plan
 
@@ -224,7 +236,7 @@ Dashboard and analytics:
 - failure trends
 - replay controls
 
-### Phase 7
+### Phase 7 ✅ Completed
 Observability and hardening:
 - traces
 - metrics
@@ -232,6 +244,8 @@ Observability and hardening:
 - alerts
 - role-based access
 - production deployment
+- analytics validation
+- backfill support
 
 ## Current status
 
@@ -239,9 +253,10 @@ Phase 1 foundation setup completed.
 Phase 2 architecture and planning completed.  
 Phase 3 local development setup completed.  
 Phase 4 webhook ingestion MVP completed.  
-Phase 5 async processing and reliability completed. 
-Phase 6 dashboard and analytics completed.
-Next focus: observability and hardening.
+Phase 5 async processing and reliability completed.  
+Phase 6 dashboard and analytics completed.  
+Phase 7 observability and hardening completed.  
+Next focus: ongoing production refinement, monitoring, and operational maintenance.
 
 ## Notes
 
