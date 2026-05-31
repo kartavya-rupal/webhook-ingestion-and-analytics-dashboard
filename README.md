@@ -1,8 +1,8 @@
 # FinRelay
 
-FinRelay is a fintech-focused webhook reliability, observability, and analytics platform.
+FinRelay is a fintech-focused webhook reliability, observability, analytics, and search platform.
 
-It receives incoming webhook events from external systems, verifies their authenticity, stores the raw payload safely, queues processing asynchronously, retries failures with backoff, isolates poison messages in a dead-letter queue, exposes delivery health through an operator dashboard, and provides operational analytics for monitoring reliability trends.
+It receives incoming webhook events from external systems, verifies their authenticity, stores the raw payload safely, queues processing asynchronously, retries failures with backoff, isolates poison messages in a dead-letter queue, exposes delivery health through an operator dashboard, provides operational analytics for reliability trends, and offers search and payload inspection for incident investigation.
 
 ## What problem it solves
 
@@ -18,6 +18,7 @@ FinRelay helps teams:
 - view reliability metrics and failure trends
 - inspect payloads, attempts, traces, and charts
 - monitor the system with alerts and observability data
+- search events, failures, payload snippets, and logs during incidents
 
 ## Domain
 
@@ -156,7 +157,7 @@ Dashboard and analytics:
 - delivery metrics
 - failure trends
 - replay controls
-- event details screens
+- event detail screens
 - retry history visibility
 - dashboard charts and summaries
 
@@ -170,6 +171,19 @@ Observability and hardening:
 - production deployment
 - analytics validation
 - analytics backfill support
+
+### Phase 8 ✅ Completed
+Search and inspection:
+- event search
+- attempt search
+- replay search
+- log search
+- payload preview search
+- safe payload inspection
+- failure pattern shortcuts
+- time range filters
+- relevance sorting
+- operator workflow documentation
 
 ## Phase plan
 
@@ -230,11 +244,12 @@ Async processing and reliability:
 
 ### Phase 6 ✅ Completed
 Dashboard and analytics:
-- operator views
-- event timelines
-- delivery metrics
-- failure trends
-- replay controls
+- event list
+- event details
+- retry history
+- replay console
+- analytics charts
+- operational summaries
 
 ### Phase 7 ✅ Completed
 Observability and hardening:
@@ -247,6 +262,16 @@ Observability and hardening:
 - analytics validation
 - backfill support
 
+### Phase 8 ✅ Completed
+Search and inspection:
+- event search
+- failure investigation
+- payload previews
+- safe payload inspection
+- time filters
+- relevance ranking
+- operator workflow
+
 ## Current status
 
 Phase 1 foundation setup completed.  
@@ -256,7 +281,8 @@ Phase 4 webhook ingestion MVP completed.
 Phase 5 async processing and reliability completed.  
 Phase 6 dashboard and analytics completed.  
 Phase 7 observability and hardening completed.  
-Next focus: ongoing production refinement, monitoring, and operational maintenance.
+Phase 8 search and inspection completed.  
+Next focus: ongoing production refinement, monitoring, maintenance, and future feature expansion.
 
 ## Notes
 
