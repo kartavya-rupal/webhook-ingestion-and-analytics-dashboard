@@ -2,11 +2,11 @@
 
 ## 1. Overview
 
-FinRelay is a fintech operations webhook reliability, observability, and analytics platform.
+FinRelay is a fintech operations webhook reliability, observability, analytics, and search platform.
 
-It receives webhook events from external systems, verifies them, stores them safely, processes them asynchronously, handles retries and failures, supports replay, and gives operators visibility into event delivery health and trend data.
+It receives webhook events from external systems, verifies them, stores them safely, processes them asynchronously, handles retries and failures, supports replay, gives operators visibility into event delivery health and trend data, and provides search and payload inspection for incident response.
 
-The system is designed around reliability, replayability, observability, analytics, and operational control.
+The system is designed around reliability, replayability, observability, analytics, searchability, and operational control.
 
 The project focuses on fintech-style events such as:
 - payment.succeeded
@@ -28,8 +28,9 @@ Webhook-driven systems are common in fintech, but they become difficult to manag
 - failures need auditing
 - operators need visibility into delivery behavior
 - teams need analytics around retries, latency, failure patterns, and replay success
+- teams need to search payloads, logs, failures, and incident clues quickly
 
-FinRelay solves that reliability, observability, and analytics layer.
+FinRelay solves that reliability, observability, analytics, and investigation layer.
 
 ---
 
@@ -112,6 +113,19 @@ Observability and hardening completed:
 - analytics validation
 - analytics backfill support
 
+### Phase 8
+Search and inspection completed:
+- event search
+- attempt search
+- replay search
+- log search
+- payload preview search
+- safe payload inspection
+- failure pattern shortcuts
+- time range filters
+- relevance sorting
+- operator workflow documentation
+
 ### Current development focus
 - ongoing production refinement
 - monitoring and maintenance
@@ -169,7 +183,7 @@ Observability and hardening completed:
 - scalability
 - observability
 - modularity
-- clear separation between ingestion, processing, analytics, and operator experience
+- clear separation between ingestion, processing, analytics, search, and operator experience
 
 ---
 
@@ -188,7 +202,7 @@ Observability and hardening completed:
 11. Success or failure is written back to PostgreSQL.
 12. Failed events are retried with backoff.
 13. Poison messages are moved to the DLQ.
-14. The dashboard reads event history, attempts, replay status, and analytics summaries.
+14. The dashboard reads event history, attempts, replay status, analytics summaries, and search results.
 15. Metrics, traces, and logs are exported to the observability stack.
 16. Alerts are triggered when abnormal conditions are detected.
 17. Operators can inspect, search, and replay events from the dashboard.
@@ -212,7 +226,7 @@ Used for:
 - delivery timeline
 - DLQ browser
 - replay console
-- analytics dashboards
+- charts and dashboards
 - audit log viewer
 - search pages
 
@@ -229,7 +243,8 @@ Used for:
 - auth-protected admin APIs
 - data retrieval for dashboard screens
 - analytics read endpoints
-- observability summaries
+- search endpoints
+- payload inspection endpoints
 
 ### Database
 - PostgreSQL
@@ -302,6 +317,8 @@ Used for:
 - failure investigation
 - event filtering
 - log-style query exploration
+- safe payload preview indexing
+- incident search and drilldown
 
 ### Observability
 - OpenTelemetry
@@ -381,6 +398,7 @@ Must not own:
 - replay logic
 - dashboard logic
 - analytics aggregation
+- search indexing
 
 ### Worker Service
 Owns:
@@ -397,6 +415,7 @@ Must not own:
 - UI rendering
 - auth/login logic
 - raw provider validation
+- search UI behavior
 
 ### Dashboard Backend
 Owns:
@@ -408,7 +427,8 @@ Owns:
 - replay actions
 - analytics summaries
 - audit log retrieval
-- metrics and observability summaries
+- search APIs
+- payload inspection APIs
 
 Must not own:
 - public webhook ingestion
@@ -424,7 +444,7 @@ Owns:
 - DLQ browser
 - analytics charts
 - audit log views
-- operational summary cards
+- search and inspection pages
 
 Must not own:
 - durable data storage
@@ -433,24 +453,26 @@ Must not own:
 - worker logic
 
 ### Analytics Path
-Implemented for dashboard use:
+Implemented:
 - ClickHouse aggregates
 - trend charts
 - success/failure summaries
 - latency analysis
 - retry analysis
-- replay summaries
+- replay analysis
 
 ### Search Path
-Implemented or planned for later operational use:
+Implemented:
 - payload search
 - event search
 - failed delivery search
 - log-style investigation
 - filtering by event type or endpoint
+- safe payload preview
+- incident drilldown
 
 ### Observability Path
-Implemented for operational hardening:
+Implemented:
 - traces
 - metrics
 - logs
@@ -601,6 +623,16 @@ Fields:
 - p95_latency
 - p99_latency
 
+### Search document
+Represents derived, query-friendly records for incident investigation.
+
+Examples:
+- event document
+- attempt document
+- replay document
+- log document
+- payload preview document
+
 ---
 
 ## 10. Event Lifecycle States
@@ -638,11 +670,80 @@ These states should be explicit in the data model so the dashboard can show a cl
 - audit logging
 - event archival
 - analytics validation
-- backfill recovery
+- search indexing
+- payload inspection
 
 ---
 
-## 12. Replay Policy Summary
+## 12. Observability Patterns Used
+
+- trace propagation using correlation IDs
+- API span instrumentation
+- queue processing spans
+- worker spans
+- DB query timing
+- failure reason tracking
+- Grafana dashboards
+- log aggregation in Loki
+- metrics collection in Prometheus
+- alert routing
+- dashboard drilldown
+- incident timelines
+
+---
+
+## 13. Analytics Strategy
+
+Transactional data stays in PostgreSQL.
+
+Analytics-friendly aggregates are pushed to ClickHouse.
+
+Examples:
+- events per minute
+- success rate by endpoint
+- failure rate by event type
+- retry histogram
+- p95 / p99 latency
+- DLQ trends
+- replay success rate
+
+Analytics validation and backfill are part of the system so aggregates can be trusted and rebuilt when needed.
+
+---
+
+## 14. Search Strategy
+
+OpenSearch is used for:
+- full-text search across payloads
+- failed event investigation
+- event type filtering
+- error message lookup
+- operator notes
+- incident investigation
+- payload preview search
+- safe payload inspection
+- failure pattern search
+- time range drilldown
+
+---
+
+## 15. Security Strategy
+
+- tenant isolation
+- role-based dashboard access
+- signed webhook verification
+- timestamp freshness checks
+- rate limiting
+- encrypted secrets storage
+- payload redaction where needed
+- restricted replay permissions
+- private infrastructure access where possible
+- protected payload inspection
+- audit logging for sensitive actions
+
+---
+
+## 16. Replay Policy Summary
 
 Replay is operator-driven recovery.
 
@@ -666,7 +767,7 @@ Replay states:
 
 ---
 
-## 13. Roles and Permissions Summary
+## 17. Roles and Permissions Summary
 
 ### Admin
 - full dashboard control
@@ -684,16 +785,19 @@ Replay states:
 - view analytics
 - view logs
 - view audit logs
+- search incidents
+- inspect payload previews
 
 ### Viewer
 - read-only access to dashboards
 - event summaries
 - analytics charts
 - limited audit views
+- search results with restricted actions
 
 ---
 
-## 14. Data Ownership
+## 18. Data Ownership
 
 ### Ingestion API owns
 - webhook intake
@@ -716,6 +820,8 @@ Replay states:
 - audit logs
 - analytics queries
 - observability summaries
+- search APIs
+- payload inspection APIs
 
 ### PostgreSQL owns
 - durable business state
@@ -738,11 +844,11 @@ Replay states:
 - analytics aggregates
 
 ### OpenSearch owns
-- searchable payloads and logs
+- searchable payloads, failures, and logs
 
 ---
 
-## 15. API Surface
+## 19. API Surface
 
 ### Ingestion API
 - POST /webhooks/:provider
@@ -752,6 +858,7 @@ Replay states:
 - GET /events
 - GET /events/:id
 - GET /events/:id/attempts
+- GET /events/:id/payload
 
 ### Endpoint APIs
 - GET /endpoints
@@ -770,6 +877,14 @@ Replay states:
 - GET /analytics/event-types
 - GET /analytics/replays
 
+### Search APIs
+- GET /search/events
+- GET /search/attempts
+- GET /search/replays
+- GET /search/logs
+- GET /search/payloads
+- GET /search/suggestions
+
 ### Alert APIs
 - GET /alerts
 
@@ -783,80 +898,47 @@ Replay states:
 
 ---
 
-## 16. Observability Map
+## 20. Search and Inspection Workflow
 
-### Trace points
-- webhook request arrival
-- signature verification
-- S3 write
-- Redis dedupe check
-- queue publish
-- worker start
-- worker finish
-- retry scheduling
-- DLQ move
-- replay execution
-- analytics sync
+The operator workflow is:
 
-### Metrics
-- request count
-- success count
-- failure count
-- retry count
-- DLQ count
-- queue lag
-- worker processing time
-- replay success rate
-- endpoint failure rate
-- event latency percentiles
-
-### Logs
-- request logs
-- worker logs
-- retry logs
-- replay logs
-- error logs
-- audit logs
-
-### Destinations
-- OpenTelemetry
-- Prometheus
-- Grafana
-- Loki
-- ClickHouse for aggregates
-- OpenSearch for search-backed investigation
+1. search the event
+2. open the event detail
+3. inspect the safe payload preview
+4. read the failure reason
+5. inspect the attempts
+6. search similar failures
+7. check related logs
+8. confirm whether replay happened
+9. decide whether to replay or investigate upstream
 
 ---
 
-## 17. Security Strategy
+## 21. Search Document Principles
 
-- tenant isolation
-- role-based dashboard access
-- signed webhook verification
-- timestamp freshness checks
-- rate limiting
-- encrypted secrets storage
-- payload redaction where needed
-- restricted replay permissions
-- private infrastructure access where possible
-- audit logging for sensitive actions
+Search documents should be:
+- derived
+- idempotent
+- stable by document ID
+- safe for incident use
+- small and query-friendly
+- rebuildable from source systems
 
 ---
 
-## 18. Deferred Items
+## 22. Payload Inspection Principles
 
-The following are no longer major phase-level blockers, but they remain natural extension areas:
-- multi-region failover
-- Kubernetes
-- Terraform / full IaC automation
-- advanced autoscaling
-- rich reporting engine
-- public SaaS onboarding flows
-- broader enterprise workflow integrations
+Payload inspection should:
+- keep raw payloads archived separately
+- show safe previews by default
+- redact secrets and sensitive headers
+- allow controlled raw inspection when needed
+- stay usable from the dashboard
+- avoid mixing archival data with search data
 
 ---
 
-## 19. Phase Plan
+## 23. Phase Plan
 
 ### Phase 1 ✅ Completed
 Foundation setup:
@@ -872,13 +954,8 @@ Architecture and planning:
 - service boundaries
 - entity model
 - event state model
-- retry policy
-- replay policy
-- roles and permissions
-- data ownership
-- API surface
-- observability mapping
-- deferred items
+- environment variable design
+- flow diagrams
 
 ### Phase 3 ✅ Completed
 Local development setup:
@@ -897,7 +974,6 @@ Webhook ingestion MVP:
 - raw storage
 - dedupe
 - queue push
-- ingestion metadata tracking
 
 ### Phase 5 ✅ Completed
 Worker and reliability layer:
@@ -924,12 +1000,25 @@ Observability and hardening:
 - alerts
 - role-based access
 - analytics validation
-- analytics backfill support
+- backfill support
 - production deployment
+
+### Phase 8 ✅ Completed
+Search and inspection:
+- event search
+- attempt search
+- replay search
+- log search
+- payload preview search
+- safe payload inspection
+- failure pattern shortcuts
+- time range filters
+- relevance sorting
+- operator workflow documentation
 
 ---
 
-## 20. Success Criteria
+## 24. Success Criteria
 
 The project is successful if it can:
 - receive fintech-style webhooks reliably
@@ -939,6 +1028,7 @@ The project is successful if it can:
 - support manual replay
 - provide usable analytics
 - expose searchable operational history
-- emit traces, metrics, and logs
-- alert on abnormal behavior
 - deploy cleanly in a production-like environment
+- support safe payload inspection
+- support incident investigation with search and logs
+- rebuild analytics and search state when needed
