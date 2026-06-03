@@ -126,10 +126,21 @@ Search and inspection completed:
 - relevance sorting
 - operator workflow documentation
 
+### Phase 9
+Production readiness and operational refinement completed:
+- trace propagation across API, worker, analytics, replay, and search flows
+- structured logging across services
+- Prometheus metrics for requests, queue lag, retries, DLQ, replay, search, and analytics
+- Grafana dashboards and alert rules
+- search indexing validation and backfill support
+- replay observability and auditability
+- production deployment hardening
+- service-level telemetry consistency
+
 ### Current development focus
-- ongoing production refinement
-- monitoring and maintenance
-- operational tuning
+- ongoing production maintenance
+- monitoring and operational tuning
+- search and analytics refinement
 - future feature expansion
 
 ---
@@ -206,6 +217,8 @@ Search and inspection completed:
 15. Metrics, traces, and logs are exported to the observability stack.
 16. Alerts are triggered when abnormal conditions are detected.
 17. Operators can inspect, search, and replay events from the dashboard.
+18. Search indexes are updated for event inspection and incident response.
+19. Analytics aggregates are refreshed for reliability trends and reporting.
 
 ---
 
@@ -465,11 +478,11 @@ Implemented:
 Implemented:
 - payload search
 - event search
-- failed delivery search
-- log-style investigation
-- filtering by event type or endpoint
+- failed event search
+- log search
 - safe payload preview
-- incident drilldown
+- replay-related search
+- time range filters
 
 ### Observability Path
 Implemented:
@@ -478,6 +491,7 @@ Implemented:
 - logs
 - alerting
 - dashboards
+- production validation
 
 ---
 
@@ -669,9 +683,8 @@ These states should be explicit in the data model so the dashboard can show a cl
 - manual replay
 - audit logging
 - event archival
-- analytics validation
-- search indexing
-- payload inspection
+- replayability by archived payload
+- state transition tracking
 
 ---
 
@@ -686,9 +699,9 @@ These states should be explicit in the data model so the dashboard can show a cl
 - Grafana dashboards
 - log aggregation in Loki
 - metrics collection in Prometheus
-- alert routing
-- dashboard drilldown
-- incident timelines
+- replay tracing
+- search indexing tracing
+- alert correlation
 
 ---
 
@@ -706,6 +719,8 @@ Examples:
 - p95 / p99 latency
 - DLQ trends
 - replay success rate
+- endpoint reliability summaries
+- time-window reliability trends
 
 Analytics validation and backfill are part of the system so aggregates can be trusted and rebuilt when needed.
 
@@ -721,9 +736,11 @@ OpenSearch is used for:
 - operator notes
 - incident investigation
 - payload preview search
-- safe payload inspection
-- failure pattern search
-- time range drilldown
+- replay search
+- log search
+- failure pattern shortcuts
+- time range filtering
+- relevance sorting
 
 ---
 
@@ -738,8 +755,8 @@ OpenSearch is used for:
 - payload redaction where needed
 - restricted replay permissions
 - private infrastructure access where possible
-- protected payload inspection
 - audit logging for sensitive actions
+- safe payload inspection defaults
 
 ---
 
@@ -1016,6 +1033,17 @@ Search and inspection:
 - relevance sorting
 - operator workflow documentation
 
+### Phase 9 ✅ Completed
+Production readiness and operational refinement:
+- trace propagation
+- structured logging
+- metrics and dashboards
+- alert rules
+- search indexing support
+- replay observability
+- deployment hardening
+- service telemetry consistency
+
 ---
 
 ## 24. Success Criteria
@@ -1032,3 +1060,4 @@ The project is successful if it can:
 - support safe payload inspection
 - support incident investigation with search and logs
 - rebuild analytics and search state when needed
+- remain observable, measurable, and operable in production
