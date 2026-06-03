@@ -185,6 +185,17 @@ Search and inspection:
 - relevance sorting
 - operator workflow documentation
 
+### Phase 9 ✅ Completed
+Production readiness and operational refinement:
+- trace propagation across API, worker, analytics, replay, and search flows
+- structured logging across services
+- Prometheus metrics for requests, queue lag, retries, DLQ, replay, search, and analytics
+- Grafana dashboards and alert rules
+- search indexing validation and backfill support
+- replay observability and auditability
+- production deployment hardening
+- service-level telemetry consistency
+
 ## Phase plan
 
 ### Phase 1 ✅ Completed
@@ -258,9 +269,9 @@ Observability and hardening:
 - logs
 - alerts
 - role-based access
-- production deployment
 - analytics validation
 - backfill support
+- production deployment
 
 ### Phase 8 ✅ Completed
 Search and inspection:
@@ -269,8 +280,19 @@ Search and inspection:
 - payload previews
 - safe payload inspection
 - time filters
-- relevance ranking
+- relevance sorting
 - operator workflow
+
+### Phase 9 ✅ Completed
+Production readiness and operational refinement:
+- trace propagation
+- structured logging
+- metrics and dashboards
+- alert rules
+- search indexing support
+- replay observability
+- deployment hardening
+- service telemetry consistency
 
 ## Current status
 
@@ -282,7 +304,8 @@ Phase 5 async processing and reliability completed.
 Phase 6 dashboard and analytics completed.  
 Phase 7 observability and hardening completed.  
 Phase 8 search and inspection completed.  
-Next focus: ongoing production refinement, monitoring, maintenance, and future feature expansion.
+Phase 9 production readiness and operational refinement completed.  
+Next focus: ongoing production maintenance, monitoring, tuning, and future feature expansion.
 
 ## Notes
 
