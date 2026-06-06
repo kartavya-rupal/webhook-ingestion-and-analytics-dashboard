@@ -196,6 +196,43 @@ Production readiness and operational refinement:
 - production deployment hardening
 - service-level telemetry consistency
 
+### Phase 10 ⏳ Remaining
+Alerts and notifications:
+- alert routing
+- Slack notifications
+- email notifications
+- incident thresholds
+- escalation tuning
+- alert noise reduction
+
+### Phase 11 ✅ Completed
+Minimum security slice:
+- tenant isolation
+- role-based access control
+- replay permissions
+- timestamp validation
+- signature security
+- secret management
+- payload redaction
+- audit logging for sensitive actions
+
+### Phase 12 ⏳ Remaining
+Deployment:
+- production service rollout
+- environment wiring
+- DNS / ingress finalization
+- deployment validation
+- smoke testing in AWS
+
+### Phase 13 ⏳ Remaining
+CI/CD:
+- GitHub Actions pipelines
+- build and test automation
+- container publishing
+- deployment automation
+- release checks
+- rollback support
+
 ## Phase plan
 
 ### Phase 1 ✅ Completed
@@ -294,6 +331,17 @@ Production readiness and operational refinement:
 - deployment hardening
 - service telemetry consistency
 
+### Phase 11 ✅ Completed
+Minimum security slice:
+- tenant isolation
+- role-based access control
+- replay permissions
+- timestamp validation
+- signature security
+- secret management
+- payload redaction
+- audit logging for sensitive actions
+
 ## Current status
 
 Phase 1 foundation setup completed.  
@@ -305,6 +353,10 @@ Phase 6 dashboard and analytics completed.
 Phase 7 observability and hardening completed.  
 Phase 8 search and inspection completed.  
 Phase 9 production readiness and operational refinement completed.  
+Phase 10 is pending for alerts and notifications.  
+Phase 11 security hardening is complete.  
+Phase 12 deployment is pending.  
+Phase 13 CI/CD is pending.  
 Next focus: ongoing production maintenance, monitoring, tuning, and future feature expansion.
 
 ## Notes
