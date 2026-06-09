@@ -3,6 +3,10 @@
     "type": "module",
     "private": true,
     "version": "0.1.0",
+    "main": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts"
+    },
     "dependencies": {
         "pino": "^10.3.1"
     }
