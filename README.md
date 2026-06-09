@@ -1,0 +1,364 @@
+# FinRelay
+
+FinRelay is a fintech-focused webhook reliability, observability, analytics, and search platform.
+
+It receives incoming webhook events from external systems, verifies their authenticity, stores the raw payload safely, queues processing asynchronously, retries failures with backoff, isolates poison messages in a dead-letter queue, exposes delivery health through an operator dashboard, provides operational analytics for reliability trends, and offers search and payload inspection for incident investigation.
+
+## What problem it solves
+
+In real fintech workflows, webhook delivery is often unreliable at scale. Events may arrive more than once, be delayed, fail temporarily, or fail permanently because of downstream issues.
+
+FinRelay helps teams:
+- ingest webhook events safely
+- verify signatures and freshness
+- prevent duplicate processing
+- retry transient failures
+- route poison events into a DLQ
+- replay failed events from a dashboard
+- view reliability metrics and failure trends
+- inspect payloads, attempts, traces, and charts
+- monitor the system with alerts and observability data
+- search events, failures, payload snippets, and logs during incidents
+
+## Domain
+
+Fintech operations
+
+Example event types:
+- payment.succeeded
+- payment.failed
+- refund.created
+- payout.failed
+- chargeback.created
+- settlement.received
+
+## High-level architecture
+
+Webhook source → API ingress → signature verification → raw storage → dedupe → queue → worker processing → transactional state update → archival → analytics indexing → search indexing → observability → alerts → replay console
+
+## Core stack
+
+### Application stack
+- Frontend: Next.js, TypeScript, Tailwind CSS, shadcn/ui, Recharts
+- API: Node.js, TypeScript
+- Auth: JWT / Clerk / Auth.js
+
+### Data and messaging stack
+- Main DB: PostgreSQL
+- Cache: Redis
+- Queue: AWS SQS + DLQ
+- Storage: AWS S3
+- Analytics: ClickHouse
+- Search: OpenSearch
+
+### Infrastructure and delivery stack
+- Deployment: Docker, AWS ECS/Fargate
+- CI/CD: GitHub Actions
+- Notifications: Slack / Email
+
+### Observability stack
+- OpenTelemetry
+- Prometheus
+- Grafana
+- Loki
+
+## Current infrastructure
+
+Provisioned AWS resources:
+- RDS PostgreSQL instance
+- ElastiCache Redis instance
+- S3 archival bucket
+- SQS processing queue
+- SQS dead-letter queue
+- ECR repositories for:
+  - API service
+  - Worker service
+  - Dashboard service
+- ECS cluster foundation
+- CloudWatch log group
+- IAM roles and security groups
+
+Analytics and observability infrastructure:
+- ClickHouse analytics store
+- Prometheus metrics collection
+- Grafana dashboards
+- Loki log aggregation
+- OpenSearch search capability
+
+Configured environments:
+- Local development
+- AWS dev environment
+
+Region:
+- ap-south-1 (Mumbai)
+
+## What is already complete
+
+### Phase 1 ✅ Completed
+Foundation setup:
+- repository initialization
+- AWS account and IAM setup
+- naming conventions
+- infrastructure provisioning
+- resource inventory
+- PostgreSQL setup
+- Redis setup
+- S3 setup
+- SQS + DLQ setup
+- ECR repositories
+- ECS foundation
+- architecture documentation
+
+### Phase 2 ✅ Completed
+Architecture and planning:
+- scope definition
+- service boundaries
+- entity model
+- event lifecycle mapping
+- retry policy
+- replay policy
+- roles and permissions
+- data ownership
+- API surface
+- observability map
+- deferred items
+
+### Phase 3 ✅ Completed
+Local development setup:
+- monorepo app skeleton
+- shared packages
+- Docker Compose local infrastructure
+- config and secrets handling
+- health and readiness checks
+- stable dev workflow
+- local documentation
+
+### Phase 4 ✅ Completed
+Webhook ingestion MVP:
+- public ingest endpoint
+- signature verification
+- raw event storage
+- dedupe
+- queue dispatch
+- ingestion metadata tracking
+
+### Phase 5 ✅ Completed
+Async processing and reliability:
+- worker service
+- retries
+- DLQ
+- replay flow
+- delivery attempt logging
+
+### Phase 6 ✅ Completed
+Dashboard and analytics:
+- operator views
+- event timelines
+- delivery metrics
+- failure trends
+- replay controls
+- event detail screens
+- retry history visibility
+- dashboard charts and summaries
+
+### Phase 7 ✅ Completed
+Observability and hardening:
+- traces
+- metrics
+- logs
+- alerts
+- role-based access
+- production deployment
+- analytics validation
+- analytics backfill support
+
+### Phase 8 ✅ Completed
+Search and inspection:
+- event search
+- attempt search
+- replay search
+- log search
+- payload preview search
+- safe payload inspection
+- failure pattern shortcuts
+- time range filters
+- relevance sorting
+- operator workflow documentation
+
+### Phase 9 ✅ Completed
+Production readiness and operational refinement:
+- trace propagation across API, worker, analytics, replay, and search flows
+- structured logging across services
+- Prometheus metrics for requests, queue lag, retries, DLQ, replay, search, and analytics
+- Grafana dashboards and alert rules
+- search indexing validation and backfill support
+- replay observability and auditability
+- production deployment hardening
+- service-level telemetry consistency
+
+### Phase 10 ⏳ Remaining
+Alerts and notifications:
+- alert routing
+- Slack notifications
+- email notifications
+- incident thresholds
+- escalation tuning
+- alert noise reduction
+
+### Phase 11 ✅ Completed
+Minimum security slice:
+- tenant isolation
+- role-based access control
+- replay permissions
+- timestamp validation
+- signature security
+- secret management
+- payload redaction
+- audit logging for sensitive actions
+
+### Phase 12 ⏳ Remaining
+Deployment:
+- production service rollout
+- environment wiring
+- DNS / ingress finalization
+- deployment validation
+- smoke testing in AWS
+
+### Phase 13 ⏳ Remaining
+CI/CD:
+- GitHub Actions pipelines
+- build and test automation
+- container publishing
+- deployment automation
+- release checks
+- rollback support
+
+## Phase plan
+
+### Phase 1 ✅ Completed
+Foundation setup:
+- repository initialization
+- AWS account and IAM setup
+- naming conventions
+- infrastructure provisioning
+- resource inventory
+- PostgreSQL setup
+- Redis setup
+- S3 setup
+- SQS + DLQ setup
+- ECR repositories
+- ECS foundation
+- architecture documentation
+
+### Phase 2 ✅ Completed
+Documentation and architecture:
+- scope definition
+- system design
+- entity mapping
+- event lifecycle mapping
+- retry policy
+- replay policy
+- access model
+- data ownership
+- API surface
+- observability mapping
+
+### Phase 3 ✅ Completed
+Local development setup:
+- app skeleton
+- Docker setup
+- service connectivity
+- config strategy
+- health checks
+- tests
+- documentation
+
+### Phase 4 ✅ Completed
+Webhook ingestion MVP:
+- public ingest endpoint
+- signature verification
+- raw event storage
+- dedupe
+- queue dispatch
+- event status tracking
+
+### Phase 5 ✅ Completed
+Async processing and reliability:
+- worker service
+- retries
+- DLQ
+- replay flow
+- delivery attempt logging
+
+### Phase 6 ✅ Completed
+Dashboard and analytics:
+- event list
+- event details
+- retry history
+- replay console
+- analytics charts
+- operational summaries
+
+### Phase 7 ✅ Completed
+Observability and hardening:
+- traces
+- metrics
+- logs
+- alerts
+- role-based access
+- analytics validation
+- backfill support
+- production deployment
+
+### Phase 8 ✅ Completed
+Search and inspection:
+- event search
+- failure investigation
+- payload previews
+- safe payload inspection
+- time filters
+- relevance sorting
+- operator workflow
+
+### Phase 9 ✅ Completed
+Production readiness and operational refinement:
+- trace propagation
+- structured logging
+- metrics and dashboards
+- alert rules
+- search indexing support
+- replay observability
+- deployment hardening
+- service telemetry consistency
+
+### Phase 11 ✅ Completed
+Minimum security slice:
+- tenant isolation
+- role-based access control
+- replay permissions
+- timestamp validation
+- signature security
+- secret management
+- payload redaction
+- audit logging for sensitive actions
+
+## Current status
+
+Phase 1 foundation setup completed.  
+Phase 2 architecture and planning completed.  
+Phase 3 local development setup completed.  
+Phase 4 webhook ingestion MVP completed.  
+Phase 5 async processing and reliability completed.  
+Phase 6 dashboard and analytics completed.  
+Phase 7 observability and hardening completed.  
+Phase 8 search and inspection completed.  
+Phase 9 production readiness and operational refinement completed.  
+Phase 10 is pending for alerts and notifications.  
+Phase 11 security hardening is complete.  
+Phase 12 deployment is pending.  
+Phase 13 CI/CD is pending.  
+Next focus: ongoing production maintenance, monitoring, tuning, and future feature expansion.
+
+## Notes
+
+This project is intentionally scoped as a focused, production-style fintech operations system rather than a general-purpose webhook company clone.
