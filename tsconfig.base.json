@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "lib": [
+            "ES2022",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "strict": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "allowJs": false,
+        "noEmit": true,
+        "baseUrl": ".",
+        "paths": {
+            "@finrelay/shared": [
+                "packages/shared/src"
+            ],
+            "@finrelay/shared/*": [
+                "packages/shared/src/*"
+            ],
+            "@finrelay/config/*": [
+                "packages/config/src/*"
+            ],
+            "@finrelay/db/*": [
+                "packages/db/src/*"
+            ]
+        }
+    }
+}

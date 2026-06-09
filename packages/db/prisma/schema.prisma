@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantStatus {
+  active
+  suspended
+  archived
+}
+
+enum UserRole {
+  admin
+  operator
+  viewer
+}
+
+enum EndpointStatus {
+  active
+  paused
+  disabled
+}
+
+enum WebhookEventStatus {
+  received
+  verified
+  persisted
+  queued
+  processing
+  succeeded
+  failed_retryable
+  retry_scheduled
+  failed_non_retryable
+  moved_to_dlq
+  replay_requested
+  replay_processing
+  replay_succeeded
+  replay_failed
+}
+
+enum DeliveryAttemptStatus {
+  pending
+  succeeded
+  failed
+  retry_scheduled
+}
+
+enum DeliveryFailureCategory {
+  retryable
+  non_retryable
+  poison
+}
+
+enum ReplayStatus {
+  requested
+  processing
+  succeeded
+  failed
+}
+
+enum AlertRuleType {
+  dlq_spike
+  retry_spike
+  latency_spike
+  failure_burst
+}
+
+enum ActorType {
+  user
+  system
+}
+
+model Tenant {
+  id        String       @id @default(cuid())
+  name      String
+  status    TenantStatus @default(active)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  users      User[]
+  endpoints  Endpoint[]
+  events     WebhookEvent[]
+  replayJobs ReplayJob[]
+  alertRules AlertRule[]
+  auditLogs  AuditLog[]
+}
+
+model User {
+  id             String   @id @default(cuid())
+  tenantId       String
+  name           String
+  email          String   @unique
+  role           UserRole @default(viewer)
+  authProviderId String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model Endpoint {
+  id                     String         @id @default(cuid())
+  tenantId               String
+  providerSlug           String         @unique
+  name                   String
+  url                    String
+  status                 EndpointStatus @default(active)
+  eventFilters           Json?
+  signingSecretReference String?
+  retryPolicy            Json?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  events WebhookEvent[]
+}
+
+model WebhookEvent {
+  id                   String                   @id @default(cuid())
+  tenantId             String
+  endpointId           String
+  providerSlug         String
+  externalEventId      String?
+  eventType            String
+  payloadPath          String
+  payloadHash          String
+  rawPayloadSize       Int?
+  requestHeaders       Json?
+  requestIp            String?
+  dedupeKey            String
+  signatureVerifiedAt  DateTime?
+  queuedAt             DateTime?
+  queueMessageId       String?
+  processingStartedAt  DateTime?
+  processingFinishedAt DateTime?
+  lastAttemptNumber    Int                      @default(0)
+  lastFailureReason    String?
+  lastFailureCategory  DeliveryFailureCategory?
+  nextRetryAt          DateTime?
+  dlqMovedAt           DateTime?
+  status               WebhookEventStatus       @default(received)
+  receivedAt           DateTime                 @default(now())
+  processedAt          DateTime?
+  replayCount          Int                      @default(0)
+  ingestionError       String?
+
+  tenant     Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  endpoint   Endpoint          @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  attempts   DeliveryAttempt[]
+  replayJobs ReplayJob[]
+
+  @@unique([tenantId, dedupeKey])
+  @@index([tenantId, providerSlug])
+  @@index([tenantId, status, nextRetryAt])
+  @@index([tenantId, externalEventId])
+}
+
+model DeliveryAttempt {
+  id              String                   @id @default(cuid())
+  eventId         String
+  attemptNumber   Int
+  status          DeliveryAttemptStatus    @default(pending)
+  failureCategory DeliveryFailureCategory?
+  responseCode    Int?
+  errorMessage    String?
+  durationMs      Int?
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  nextRetryAt     DateTime?
+  workerName      String?
+  createdAt       DateTime                 @default(now())
+
+  event WebhookEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, attemptNumber])
+  @@index([eventId, status])
+}
+
+model ReplayJob {
+  id             String       @id @default(cuid())
+  tenantId       String
+  eventId        String?
+  filterCriteria Json?
+  requestedBy    String?
+  replayStatus   ReplayStatus @default(requested)
+  createdAt      DateTime     @default(now())
+  finishedAt     DateTime?
+
+  tenant Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  event  WebhookEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+}
+
+model AlertRule {
+  id        String        @id @default(cuid())
+  tenantId  String
+  ruleType  AlertRuleType
+  threshold Int
+  window    Int
+  enabled   Boolean       @default(true)
+  createdAt DateTime      @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id         String    @id @default(cuid())
+  tenantId   String
+  actorType  ActorType
+  actorId    String?
+  actionType String
+  metadata   Json
+  createdAt  DateTime  @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}

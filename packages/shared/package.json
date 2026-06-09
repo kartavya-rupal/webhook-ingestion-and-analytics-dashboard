@@ -1,0 +1,9 @@
+{
+    "name": "@finrelay/shared",
+    "type": "module",
+    "private": true,
+    "version": "0.1.0",
+    "dependencies": {
+        "pino": "^10.3.1"
+    }
+}

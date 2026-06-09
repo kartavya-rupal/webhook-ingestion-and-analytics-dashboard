@@ -1,0 +1,1 @@
+export { createServiceLogger } from '../../shared/src/logging';

@@ -1,0 +1,1 @@
+export { backendEnv as env } from '@finrelay/config';

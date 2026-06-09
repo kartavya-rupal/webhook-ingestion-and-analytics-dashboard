@@ -1,0 +1,48 @@
+{
+    "name": "finrelay",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev:infra:up": "docker compose up -d",
+        "dev:infra:down": "docker compose down --remove-orphans",
+        "dev:infra:ps": "docker compose ps",
+        "dev:infra:logs": "docker compose logs -f",
+        "bootstrap:localstack": "powershell -ExecutionPolicy Bypass -File .\\scripts\\bootstrap-localstack.ps1",
+        "dev:up": "powershell -ExecutionPolicy Bypass -File .\\scripts\\dev-up.ps1",
+        "dev:down": "powershell -ExecutionPolicy Bypass -File .\\scripts\\dev-down.ps1",
+        "dev:status": "powershell -ExecutionPolicy Bypass -File .\\scripts\\dev-status.ps1",
+        "dev:dashboard": "npm run dev --workspace apps/dashboard",
+        "dev:api": "npm run dev --workspace apps/api",
+        "dev:worker": "npm run dev --workspace apps/worker",
+        "dev:all": "concurrently -n dashboard,api,worker -c cyan,green,magenta \"npm run dev:dashboard\" \"npm run dev:api\" \"npm run dev:worker\"",
+        "db:generate": "prisma generate --schema packages/db/prisma/schema.prisma",
+        "db:migrate": "prisma migrate dev --schema packages/db/prisma/schema.prisma",
+        "build": "npm run build --workspaces --if-present",
+        "lint": "npm run lint --workspaces --if-present",
+        "typecheck": "npm run typecheck --workspaces --if-present",
+        "test": "npm run test --workspaces --if-present",
+        "format": "prettier . --write",
+        "format:check": "prettier . --check"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@types/node": "^25.9.1",
+        "@types/supertest": "^7.2.0",
+        "concurrently": "^9.2.1",
+        "eslint": "^10.4.0",
+        "eslint-config-prettier": "^10.1.8",
+        "prettier": "^3.8.3",
+        "supertest": "^7.2.2",
+        "tsx": "^4.22.3",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.4",
+        "vitest": "^4.1.7"
+    },
+    "dependencies": {
+        "dotenv": "^17.4.2",
+        "zod": "^4.4.3"
+    }
+}

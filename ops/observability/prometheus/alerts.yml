@@ -1,0 +1,133 @@
+groups:
+  - name: finrelay-api-alerts
+    rules:
+      - alert: FinRelayAPIErrorSpike
+        expr: |
+          sum(rate(finrelay_requests_total{outcome="error"}[5m]))
+          /
+          clamp_min(sum(rate(finrelay_requests_total[5m])), 1)
+          > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "API error rate is elevated"
+          description: "FinRelay API error rate is above 5% for 5 minutes."
+
+      - alert: FinRelayAPIHighLatency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(finrelay_request_duration_ms_bucket[5m])) by (le, providerSlug)
+          ) > 1000
+        for: 10m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "API latency is high"
+          description: "FinRelay API p95 latency is above 1s for 10 minutes."
+
+      - alert: FinRelayDBWriteLatencyHigh
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(finrelay_db_write_duration_ms_bucket[5m])) by (le, entity, operation)
+          ) > 500
+        for: 10m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Database write latency is high"
+          description: "FinRelay DB write p95 latency is above 500ms."
+
+  - name: finrelay-worker-alerts
+    rules:
+      - alert: FinRelayQueueLagHigh
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(finrelay_queue_lag_ms_bucket[5m])) by (le, queueName)
+          ) > 30000
+        for: 10m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Queue lag is high"
+          description: "FinRelay queue p95 lag is above 30s."
+
+      - alert: FinRelayWorkerFailureSpike
+        expr: |
+          sum(rate(finrelay_worker_processing_total{outcome=~"retryable_failure|non_retryable_failure|poison_failure|handler_failure"}[5m]))
+          /
+          clamp_min(sum(rate(finrelay_worker_processing_total[5m])), 1)
+          > 0.20
+        for: 10m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Worker failure rate is high"
+          description: "FinRelay worker failure ratio is above 20%."
+
+      - alert: FinRelayRetrySpike
+        expr: |
+          sum(rate(finrelay_retry_scheduled_total[5m])) > 1
+        for: 10m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Retry volume is high"
+          description: "FinRelay retry scheduling rate is elevated."
+
+      - alert: FinRelayDLQSpike
+        expr: |
+          sum(rate(finrelay_worker_processing_total{outcome="poison_failure"}[5m])) > 0
+        for: 5m
+        labels:
+          severity: critical
+          team: platform
+        annotations:
+          summary: "DLQ activity detected"
+          description: "FinRelay has poison failures and DLQ movement."
+
+  - name: finrelay-replay-alerts
+    rules:
+      - alert: FinRelayReplayFailureSpike
+        expr: |
+          sum(rate(finrelay_replay_request_total{outcome="failed"}[5m])) > 0
+        for: 5m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Replay failures detected"
+          description: "FinRelay replay requests are failing."
+
+  - name: finrelay-analytics-search-alerts
+    rules:
+      - alert: FinRelaySearchIndexFailureSpike
+        expr: |
+          sum(rate(finrelay_search_index_total{outcome="failed"}[5m])) > 0
+        for: 5m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Search indexing failures detected"
+          description: "FinRelay search indexing is failing."
+
+      - alert: FinRelayAnalyticsJobFailureSpike
+        expr: |
+          sum(rate(finrelay_analytics_job_total{outcome="error"}[5m])) > 0
+        for: 5m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Analytics job failures detected"
+          description: "FinRelay analytics jobs are failing."

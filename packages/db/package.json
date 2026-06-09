@@ -1,0 +1,21 @@
+{
+    "name": "@finrelay/db",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "main": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "generate": "prisma generate --schema prisma/schema.prisma",
+        "validate": "prisma validate --schema prisma/schema.prisma",
+        "format": "prisma format --schema prisma/schema.prisma"
+    },
+    "dependencies": {
+        "@opentelemetry/api": "^1.9.1",
+        "@prisma/client": "^6.19.3",
+        "prisma": "^6.19.3",
+        "prom-client": "^15.1.3"
+    }
+}
